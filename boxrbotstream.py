@@ -10,13 +10,12 @@ bot = discord.Client()
 db = TinyDB('data.json')
 Users = Query()
 
-server = bot.get_server('106386168593010688')
-
 async def checkStream():
+    server = bot.get_server('106386168593010688')
     print('Checking stream')
-    client = TwitchClient('twitchAPIClientid')
-    stream = client.streams.get_stream_by_user('twitchuserid')
-    vc = client.get_channel('365175633103552512')
+    client = TwitchClient('twitch_api_client_id')
+    stream = client.streams.get_stream_by_user('twitch_channel_id')
+    vc = server.get_channel('365175633103552512')
     try:
         if(stream.id is not None):
             flag = 1;
@@ -47,6 +46,7 @@ async def checkStream():
                     await bot.send_message(vc, msg, tts=False)
 
 async def updateUsers(msg):
+    server = bot.get_server('106386168593010688')
     print("Updating users")
     for item in db:
         if(item["sup"] == 1):

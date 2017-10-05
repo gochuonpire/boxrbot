@@ -12,8 +12,6 @@ bot = commands.Bot(command_prefix='.', description=description)
 db = TinyDB('data.json')
 Users = Query()
 
-server = bot.get_server('106386168593010688')
-
 def checkperms(ctx):
     allowed = ctx.message.author.id == '73654252970446848' or ctx.message.author.id == '73637559799910400' or ctx.message.author.id == '284232617363111936'
     return allowed
@@ -91,6 +89,7 @@ async def unsubscribe(ctx):
 @bot.command(pass_context=True)
 async def fill(ctx):
     """Fills 10man channel with people from waiting room"""
+    server = bot.get_server('106386168593010688')
     if(checkperms(ctx)):
         rough = ctx.message.content
         pw = rough[6:len(rough)]
