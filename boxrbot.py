@@ -27,20 +27,18 @@ async def on_ready():
 async def sendpass(ctx):
     """Sends the given password to the users in the 10man voice channel"""
     if(checkperms(ctx)):
-        for server in bot.servers:
-            for vc in server.channels:
-                if vc.id == '362888848323117061':
-                    for vm in vc.voice_members:
-                        if(vm.id != ctx.message.author.id):
-                            rough = ctx.message.content
-                            password = rough[10:len(rough)]
-                            msg = "Heres the ten-man password: **"  + password + "**\nJoin Up! :eggplant:"
-                            await bot.send_message(vm, msg, tts=False)
-                        if(vm.id == ctx.message.author.id):
-                            rough = ctx.message.content
-                            password = rough[10:len(rough)]
-                            msg = "Password **" + password + "** sent successfully :thumbsup:"
-                            await bot.send_message(vm, msg, tts=False)
+        vc = bot.get_channel('362888848323117061')
+        for vm in vc.voice_members:
+            if(vm.id != ctx.message.author.id):
+                rough = ctx.message.content
+                password = rough[10:len(rough)]
+                msg = "Heres the ten-man password: **"  + password + "**\nJoin Up! :eggplant:"
+                await bot.send_message(vm, msg, tts=False)
+            else:
+                rough = ctx.message.content
+                password = rough[10:len(rough)]
+                msg = "Password **" + password + "** sent successfully :thumbsup:"
+                await bot.send_message(vm, msg, tts=False)
 
 @bot.command(pass_context=True)
 async def sendmsg(ctx):
@@ -48,10 +46,8 @@ async def sendmsg(ctx):
     if(checkperms(ctx)):
         rough = ctx.message.content
         msg = rough[9:len(rough)]
-        for server in bot.servers:
-            for vc in server.channels:
-                if(vc.id == '106386168593010688'):
-                    await bot.send_message(vc, msg, tts=False)
+        vc = bot.get_channel('106386168593010688')
+        await bot.send_message(vc, msg, tts=False)
 
 @bot.command(pass_context=True)
 async def checkme(ctx):
@@ -89,5 +85,31 @@ async def unsubscribe(ctx):
     else:
         msg = "You already aren't subscribed to streaming notifications!\nTo receive notifications, type .subscribe!"
         await bot.send_message(ctx.message.author, msg, tts=False)
+
+@bot.command(pass_context=True)
+async def fill(ctx):
+    """Fills 10man channel with people from waiting room"""
+    count = 0
+    laundo = 0
+    rough = ctx.message.content
+    pw = rough[6:len(rough)]
+    chten = bot.get_channel('362888848323117061')
+    wten = bot.get_channel('360561583409201162')
+    for vm in chten.voice_members:
+        if(vm.id == '73654252970446848'):
+            laundo = 1
+        count += 1
+    if(count == 10 & laundo == 0):
+        unluckyBoy = sample(chten.voice_members, 1)
+        await bot.move_member(unluckyBoy, wten)
+    if(count<10):
+        spaces = 10-count;
+        newPlayers = sample(wten.voice_members, spaces)
+        for player in newPlayers:
+            await bot.move_member(player, chten)
+    if(len(pw)>1):
+        msg = "Heres the ten-man password: **"  + pw + "**\nJoin Up! :eggplant:"
+        for vm in chten.voice_members:
+            await bot.send_message(vm, msg, tts=False)
 
 bot.run('token')
