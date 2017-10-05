@@ -89,27 +89,28 @@ async def unsubscribe(ctx):
 @bot.command(pass_context=True)
 async def fill(ctx):
     """Fills 10man channel with people from waiting room"""
-    count = 0
-    laundo = 0
-    rough = ctx.message.content
-    pw = rough[6:len(rough)]
-    chten = bot.get_channel('362888848323117061')
-    wten = bot.get_channel('360561583409201162')
-    for vm in chten.voice_members:
-        if(vm.id == '73654252970446848'):
-            laundo = 1
-        count += 1
-    if(count == 10 & laundo == 0):
-        unluckyBoy = sample(chten.voice_members, 1)
-        await bot.move_member(unluckyBoy, wten)
-    if(count<10):
-        spaces = 10-count;
-        newPlayers = sample(wten.voice_members, spaces)
-        for player in newPlayers:
-            await bot.move_member(player, chten)
-    if(len(pw)>1):
-        msg = "Heres the ten-man password: **"  + pw + "**\nJoin Up! :eggplant:"
+    if(checkperms(ctx)):
+        count = 0
+        laundo = 0
+        rough = ctx.message.content
+        pw = rough[6:len(rough)]
+        chten = bot.get_channel('362888848323117061')
+        wten = bot.get_channel('360561583409201162')
         for vm in chten.voice_members:
-            await bot.send_message(vm, msg, tts=False)
+            if(vm.id == '73654252970446848'):
+                laundo = 1
+            count += 1
+        if(count == 10 & laundo == 0):
+            unluckyBoy = sample(chten.voice_members, 1)
+            await bot.move_member(unluckyBoy, wten)
+        if(count<10):
+            spaces = 10-count;
+            newPlayers = sample(wten.voice_members, spaces)
+            for player in newPlayers:
+                await bot.move_member(player, chten)
+        if(len(pw)>1):
+            msg = "Heres the ten-man password: **"  + pw + "**\nJoin Up! :eggplant:"
+            for vm in chten.voice_members:
+                await bot.send_message(vm, msg, tts=False)
 
 bot.run('token')
