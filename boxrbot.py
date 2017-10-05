@@ -12,6 +12,8 @@ bot = commands.Bot(command_prefix='.', description=description)
 db = TinyDB('data.json')
 Users = Query()
 
+server = bot.get_server('106386168593010688')
+
 def checkperms(ctx):
     allowed = ctx.message.author.id == '73654252970446848' or ctx.message.author.id == '73637559799910400' or ctx.message.author.id == '284232617363111936'
     return allowed
@@ -95,7 +97,7 @@ async def fill(ctx):
         chten = bot.get_channel('362888848323117061')
         wten = bot.get_channel('360561583409201162')
         if((len(chten.voice_members)+len(wten.voice_members))>=10):
-            laundo = bot.get_member('73654252970446848')
+            laundo = server.get_member('73654252970446848')
             if(laundo.voice.voice_channel != chten):
                 await bot.move_member(laundo, chten)
             spaces = 10 - len(chten.voice_members)
