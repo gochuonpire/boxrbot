@@ -18,6 +18,9 @@ Users = Query()
 server_address = ("ip", 27015)
 password = "rcon_pw"
 
+getgoingpw = "333"
+searching = False
+
 def pw_generator(size=3, chars=string.ascii_letters + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
@@ -34,6 +37,7 @@ def password():
     for player in chten.voice_members:
         msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + server_address[1] + "; password " + pw
         await bot.send_message(player, msg, tts=False)
+    return pw;
 
 @bot.event
 async def on_ready():
@@ -41,6 +45,29 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
+
+@bot.event
+async def on_voice_state_update(before, after):
+    server = bot.get_server('106386168593010688')
+    chten = server.get_channel('362888848323117061')
+    ch = after.voice.voice_channel
+    bch = before.voice.voice_channel
+    if ch.id == '362888848323117061' and bch.id != '362888848323117061' and searching:
+        msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + server_address[1] + "; password " + getgoingpw
+        await bot.send_message(after, msg, tts=False)
+    elif ch.id == '360561583409201162' and searching:
+        await bot.move_member(after, chten)
+        msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + server_address[1] + "; password " + getgoingpw
+        await bot.send_message(after, msg, tts=False)
+    if len(chten.voice_members) == 10 and searching:
+        seraching = False
+
+@bot.command(pass_context=True)
+async def stopsearching(ctx)
+    """Stop automatically filling your ten man / sending passwords"""
+    searching = False
+    msg = "People will no longer be bumped to 10man channel or sent password automatically"
+    await bot.send_message(ctx.message.author, msg, tts=False)
 
 @bot.command(pass_context=True)
 async def sendpass(ctx):
@@ -136,5 +163,20 @@ async def tenman(ctx):
     """Changes the password to the server and sends the new one to players"""
     if(checkperms(ctx)):
         password()
+
+@bot.command(pass_context=True)
+async def getgoing(ctx):
+    """Start a ten man early, anyone to join channel will receive connect info"""
+    if checkperms(ctx):
+        server = bot.get_server('106386168593010688')
+        chten = bot.get_channel('362888848323117061')
+        wten = bot.get_channel('360561583409201162')
+        for player in wten.voice_members:
+            await bot.move_member(player, chten)
+        if len(chten.voice_members) == 10:
+            password()
+        else:
+            getgoingpw = password()
+            searching = True
 
 bot.run('token')
