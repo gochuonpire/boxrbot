@@ -28,11 +28,13 @@ def checkperms(ctx):
     allowed = ctx.message.author.id == '73654252970446848' or ctx.message.author.id == '73637559799910400' or ctx.message.author.id == '284232617363111936'
     return allowed
 
-def password():
+async def password():
+    print('Generating password')
     chten = bot.get_channel('362888848323117061')
+    length = random.randint(3,4)
+    pw = pw_generator(length)
+    print('Pw: ' + pw + "\nAttempting to access rcon")
     with valve.rcon.RCON(server_address, password) as rcon:
-        length = randint(3,4)
-        pw = pw_generator(length)
         print(rcon("sm_sv_password " + pw))
     for player in chten.voice_members:
         msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + server_address[1] + "; password " + pw
@@ -63,7 +65,7 @@ async def on_voice_state_update(before, after):
         seraching = False
 
 @bot.command(pass_context=True)
-async def stopsearching(ctx)
+async def stopsearching(ctx):
     """Stop automatically filling your ten man / sending passwords"""
     searching = False
     msg = "People will no longer be bumped to 10man channel or sent password automatically"
@@ -162,7 +164,7 @@ async def fill(ctx):
 async def tenman(ctx):
     """Changes the password to the server and sends the new one to players"""
     if(checkperms(ctx)):
-        password()
+        await password()
 
 @bot.command(pass_context=True)
 async def getgoing(ctx):
@@ -176,7 +178,7 @@ async def getgoing(ctx):
         if len(chten.voice_members) == 10:
             password()
         else:
-            getgoingpw = password()
+            getgoingpw = await password()
             searching = True
 
 bot.run('token')
