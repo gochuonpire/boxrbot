@@ -50,19 +50,22 @@ async def on_ready():
 
 @bot.event
 async def on_voice_state_update(before, after):
-    server = bot.get_server('106386168593010688')
-    chten = server.get_channel('362888848323117061')
-    ch = after.voice.voice_channel
-    bch = before.voice.voice_channel
-    if ch.id == '362888848323117061' and bch.id != '362888848323117061' and searching:
-        msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + server_address[1] + "; password " + getgoingpw
-        await bot.send_message(after, msg, tts=False)
-    elif ch.id == '360561583409201162' and searching:
-        await bot.move_member(after, chten)
-        msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + server_address[1] + "; password " + getgoingpw
-        await bot.send_message(after, msg, tts=False)
-    if len(chten.voice_members) == 10 and searching:
-        seraching = False
+    try:
+        server = bot.get_server('106386168593010688')
+        chten = server.get_channel('362888848323117061')
+        ch = after.voice.voice_channel
+        bch = before.voice.voice_channel
+        if ch.id == '362888848323117061' and bch.id != '362888848323117061' and searching:
+            msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + server_address[1] + "; password " + getgoingpw
+            await bot.send_message(after, msg, tts=False)
+        elif ch.id == '360561583409201162' and searching:
+            await bot.move_member(after, chten)
+            msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + server_address[1] + "; password " + getgoingpw
+            await bot.send_message(after, msg, tts=False)
+        if len(chten.voice_members) == 10 and searching:
+            seraching = False
+    except AttributeError
+    #do nothing
 
 @bot.command(pass_context=True)
 async def stopsearching(ctx):
