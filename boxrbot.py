@@ -5,6 +5,9 @@ import asyncio
 from twitch import TwitchClient
 from tinydb import TinyDB, Query
 from tinydb.operations import delete
+import valve.rcon
+import random
+import string
 
 description = '''A bot for the boxr discord'''
 bot = commands.Bot(command_prefix='.', description=description)
@@ -12,9 +15,25 @@ bot = commands.Bot(command_prefix='.', description=description)
 db = TinyDB('data.json')
 Users = Query()
 
+server_address = ("ip", 27015)
+password = "rcon_pw"
+
+def pw_generator(size=3, chars=string.ascii_letters + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
 def checkperms(ctx):
     allowed = ctx.message.author.id == '73654252970446848' or ctx.message.author.id == '73637559799910400' or ctx.message.author.id == '284232617363111936'
     return allowed
+
+def password():
+    chten = bot.get_channel('362888848323117061')
+    with valve.rcon.RCON(server_address, password) as rcon:
+        length = randint(3,4)
+        pw = pw_generator(length)
+        print(rcon("sm_sv_password " + pw))
+    for player in chten.voice_members:
+        msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + server_address[1] + "; password " + pw
+        await bot.send_message(player, msg, tts=False)
 
 @bot.event
 async def on_ready():
@@ -111,5 +130,11 @@ async def fill(ctx):
         else:
             msg = "You don't even have ten players **fuccboi!** :eggplant:"
             await bot.send_message(ctx.message.author, msg, tts=False)
+
+@bot.command(pass_context=True)
+async def tenman(ctx):
+    """Changes the password to the server and sends the new one to players"""
+    if(checkperms(ctx)):
+        password()
 
 bot.run('token')
