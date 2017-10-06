@@ -64,8 +64,8 @@ async def on_voice_state_update(before, after):
             await bot.send_message(after, msg, tts=False)
         if len(chten.voice_members) == 10 and searching:
             seraching = False
-    except AttributeError
-    #do nothing
+    except AttributeError:
+        pass
 
 @bot.command(pass_context=True)
 async def stopsearching(ctx):
