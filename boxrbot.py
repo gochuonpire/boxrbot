@@ -134,7 +134,7 @@ async def unsubscribe(ctx):
 
 @bot.command(pass_context=True)
 async def fill(ctx):
-    """Fills 10man channel with people from waiting room"""
+    """Fills 10man channel with people from waiting room (sends cevo pw if you put one in)"""
     server = bot.get_server('106386168593010688')
     if(checkperms(ctx)):
         rough = ctx.message.content
@@ -163,6 +163,29 @@ async def tenman(ctx):
     """Changes the password to the server and sends the new one to players"""
     if(checkperms(ctx)):
         await password()
+
+@bot.command(pass_context=True)
+async def newfill(ctx):
+    """Fills 10 man with people from waiting room and autogenerates password"""
+    server = bot.get_server('106386168593010688')
+    if(checkperms(ctx)):
+        rough = ctx.message.content
+        pw = rough[6:len(rough)]
+        chten = bot.get_channel('362888848323117061')
+        wten = bot.get_channel('360561583409201162')
+        if((len(chten.voice_members)+len(wten.voice_members))>=10):
+            laundo = server.get_member('73654252970446848')
+            if(laundo.voice.voice_channel != chten):
+                await bot.move_member(laundo, chten)
+            spaces = 10 - len(chten.voice_members)
+            if(spaces > 0):
+                lucky = sample(wten.voice_members, spaces)
+                for player in lucky:
+                    await bot.move_member(player, chten)
+            password()
+        else:
+            msg = "You don't even have ten players **fuccboi!** :eggplant:"
+            await bot.send_message(ctx.message.author, msg, tts=False)
 
 @bot.command(pass_context=True)
 async def getgoing(ctx):
