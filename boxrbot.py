@@ -5,6 +5,7 @@ import asyncio
 from tinydb import TinyDB, Query
 from tinydb.operations import delete
 import passworder
+import string
 
 description = '''A bot for the boxr discord'''
 bot = commands.Bot(command_prefix='.', description=description)
