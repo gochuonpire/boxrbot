@@ -46,31 +46,44 @@ async def on_ready():
 
 @bot.event
 async def on_voice_state_update(before, after):
-    try:
-        global searching
-        server = bot.get_server('106386168593010688')
-        chten = server.get_channel('362888848323117061')
-        ch = after.voice.voice_channel
-        bch = before.voice.voice_channel
-        if ch.id == '362888848323117061' and searching:
-            msg = "Click this link to join the 10 man!\nsteam://connect/" + server_address[0] + ":" + str(server_address[1]) + "/" + getgoingpw
-            await bot.send_message(after, msg, tts=False)
-        elif ch.id == '360561583409201162' and searching:
-            await bot.move_member(after, chten)
-        if len(chten.voice_members) == 10 and searching:
-            seraching = False
-    except AttributeError:
-        pass
+    global searching
+    server = bot.get_server('106386168593010688')
+    chten = server.get_channel('362888848323117061')
+    ch = after.voice.voice_channel
+    bch = before.voice.voice_channel
+    if ch == None:
+        if searching and after.id == '73637559799910400':
+            searching = False
+            print('stopping search for 10man')
+    else:
+        if searching and after.id == '73637559799910400':
+            if ch.id != '362888848323117061' and ch.id != '360561583409201162' and ch.id != '360561642506813440' and ch.id != '360561674752622609':
+                searching = False
+                print('stopping search for 10man')
+        if bch != None:
+            if ch.id == '362888848323117061' and searching and bch.id != '362888848323117061':
+                msg = "Click this link to join the 10 man!\nsteam://connect/" + server_address[0] + ":" + str(server_address[1]) + "/" + getgoingpw
+                await bot.send_message(after, msg, tts=False)
+            elif ch.id == '360561583409201162' and searching:
+                await bot.move_member(after, chten)
+        else:
+            if ch.id == '362888848323117061' and searching:
+                msg = "Click this link to join the 10 man!\nsteam://connect/" + server_address[0] + ":" + str(server_address[1]) + "/" + getgoingpw
+                await bot.send_message(after, msg, tts=False)
+            elif ch.id == '360561583409201162' and searching:
+                await bot.move_member(after, chten)
+    if len(chten.voice_members) == 10 and searching:
+        seraching = False
 
 @bot.command(pass_context=True)
-async def stopsearching(ctx):
+async def stoptenman(ctx):
     """Stop automatically filling your ten man / sending passwords"""
     searching = False
     msg = "People will no longer be bumped to 10man channel or sent password automatically"
     await bot.send_message(ctx.message.author, msg, tts=False)
 
-@bot.command(pass_context=True)
-async def sendpass(ctx):
+@bot.command(pass_context=True, name="password")
+async def pw(ctx):
     """Sends the given password to the users in the 10man voice channel"""
     if(checkperms(ctx)):
         vc = bot.get_channel('362888848323117061')
@@ -85,23 +98,6 @@ async def sendpass(ctx):
                 pw = rough[10:len(rough)]
                 msg = "Password **" + pw + "** sent successfully :thumbsup:"
                 await bot.send_message(vm, msg, tts=False)
-
-@bot.command(pass_context=True)
-async def sendmsg(ctx):
-    """Posts the given message to the lobby text channel"""
-    if(checkperms(ctx)):
-        rough = ctx.message.content
-        msg = rough[9:len(rough)]
-        vc = bot.get_channel('106386168593010688')
-        await bot.send_message(vc, msg, tts=False)
-
-@bot.command(pass_context=True)
-async def checkme(ctx):
-    """Are you launders? Find out with this one simple trick!"""
-    if(checkperms(ctx)):
-        await bot.send_message(ctx.message.author, ':eggplant:Hi launders and or/ nathan ur both nerds:eggplant:')
-    else:
-        await bot.send_message(ctx.message.author, ':eggplant:BAD LUCK. UR NOT LAUNDERS:eggplant:\n:frog::frog::frog::frog::frog::frog:')
 
 @bot.command(pass_context=True)
 async def subscribe(ctx):
@@ -135,44 +131,12 @@ async def unsubscribe(ctx):
         await bot.send_message(ctx.message.author, msg, tts=False)
 
 @bot.command(pass_context=True)
-async def fill(ctx):
-    """Fills 10man channel with people from waiting room (sends cevo pw if you put one in)"""
-    server = bot.get_server('106386168593010688')
-    if(checkperms(ctx)):
-        rough = ctx.message.content
-        pw = rough[6:len(rough)]
-        chten = bot.get_channel('362888848323117061')
-        wten = bot.get_channel('360561583409201162')
-        if((len(chten.voice_members)+len(wten.voice_members))>=10):
-            laundo = server.get_member('73654252970446848')
-            if(laundo.voice.voice_channel != chten):
-                await bot.move_member(laundo, chten)
-            spaces = 10 - len(chten.voice_members)
-            if(spaces > 0):
-                lucky = sample(wten.voice_members, spaces)
-                for player in lucky:
-                    await bot.move_member(player, chten)
-            if(len(pw)>1):
-                msg = "Heres the ten-man password: **"  + pw + "**\nJoin Up! :eggplant:"
-                for vm in chten.voice_members:
-                    await bot.send_message(vm, msg, tts=False)
-        else:
-            msg = "You don't even have ten players **fuccboi!** :eggplant:"
-            await bot.send_message(ctx.message.author, msg, tts=False)
-
-@bot.command(pass_context=True)
 async def tenman(ctx):
     """Changes the password to the server and sends the new one to players"""
-    if(checkperms(ctx)):
-        await password()
-
-@bot.command(pass_context=True)
-async def newfill(ctx):
-    """Fills 10 man with people from waiting room and autogenerates password"""
+    global searching
+    global getgoingpw
     server = bot.get_server('106386168593010688')
-    if(checkperms(ctx)):
-        rough = ctx.message.content
-        pw = rough[6:len(rough)]
+    if checkperms(ctx):
         chten = bot.get_channel('362888848323117061')
         wten = bot.get_channel('360561583409201162')
         if((len(chten.voice_members)+len(wten.voice_members))>=10):
@@ -186,24 +150,10 @@ async def newfill(ctx):
                     await bot.move_member(player, chten)
             password()
         else:
-            msg = "You don't even have ten players **fuccboi!** :eggplant:"
-            await bot.send_message(ctx.message.author, msg, tts=False)
-
-@bot.command(pass_context=True)
-async def getgoing(ctx):
-    """Start a ten man early, anyone to join channel will receive connect info"""
-    global searching
-    global getgoingpw
-    if checkperms(ctx):
-        server = bot.get_server('106386168593010688')
-        chten = bot.get_channel('362888848323117061')
-        wten = bot.get_channel('360561583409201162')
-        for player in wten.voice_members:
-            await bot.move_member(player, chten)
-        if len(chten.voice_members) == 10:
-            password()
-        else:
-            getgoingpw = await password()
-            searching = True
+            for player in wten.voice_members:
+                await bot.move_member(player, chten)
+            else:
+                getgoingpw = await password()
+                searching = True
 
 bot.run('token')
