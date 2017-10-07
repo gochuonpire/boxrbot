@@ -29,7 +29,6 @@ def checkperms(ctx):
     return allowed
 
 async def password():
-    print('Generating password')
     chten = bot.get_channel('362888848323117061')
     pw = passworder.getpw()
     for player in chten.voice_members:
@@ -49,7 +48,6 @@ async def on_ready():
 async def on_voice_state_update(before, after):
     try:
         global searching
-        print(str(searching))
         server = bot.get_server('106386168593010688')
         chten = server.get_channel('362888848323117061')
         ch = after.voice.voice_channel
@@ -60,8 +58,6 @@ async def on_voice_state_update(before, after):
         elif ch.id == '360561583409201162' and searching:
             await bot.move_member(after, chten)
         if len(chten.voice_members) == 10 and searching:
-            print(str(chten.voice_members))
-            print('searching=false')
             seraching = False
     except AttributeError:
         pass
@@ -184,6 +180,5 @@ async def getgoing(ctx):
         else:
             getgoingpw = await password()
             searching = True
-            print(str(searching))
 
 bot.run('token')
