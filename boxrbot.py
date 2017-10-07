@@ -52,11 +52,11 @@ async def on_voice_state_update(before, after):
     ch = after.voice.voice_channel
     bch = before.voice.voice_channel
     if ch == None:
-        if searching and after.id == '73637559799910400':
+        if searching and after.id == '73654252970446848':
             searching = False
             print('stopping search for 10man')
     else:
-        if searching and after.id == '73637559799910400':
+        if searching and after.id == '73654252970446848':
             if ch.id != '362888848323117061' and ch.id != '360561583409201162' and ch.id != '360561642506813440' and ch.id != '360561674752622609':
                 searching = False
                 print('stopping search for 10man')
