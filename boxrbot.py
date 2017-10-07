@@ -97,9 +97,11 @@ async def sendmsg(ctx):
 
 @bot.command(pass_context=True)
 async def checkme(ctx):
-    """Checks to see if you are allowed to use commands"""
+    """Are you launders? Find out with this one simple trick!"""
     if(checkperms(ctx)):
-        await bot.send_message(ctx.message.author, 'You are allowed to use commands.')
+        await bot.send_message(ctx.message.author, ':boxrS:Hi launders and or/ nathan ur both nerds:boxrS:')
+    else:
+        await bot.send_message(ctx.message.author, ':boxrS:BAD LUCK. UR NOT LAUNDERS:boxrS:\n:boxrM::boxrM::boxrM::boxrM::boxrM::boxrM:')
 
 @bot.command(pass_context=True)
 async def subscribe(ctx):
