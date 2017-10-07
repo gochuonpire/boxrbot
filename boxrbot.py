@@ -99,9 +99,9 @@ async def sendmsg(ctx):
 async def checkme(ctx):
     """Are you launders? Find out with this one simple trick!"""
     if(checkperms(ctx)):
-        await bot.send_message(ctx.message.author, ':boxrS:Hi launders and or/ nathan ur both nerds:boxrS:')
+        await bot.send_message(ctx.message.author, ':eggplant:Hi launders and or/ nathan ur both nerds:eggplant:')
     else:
-        await bot.send_message(ctx.message.author, ':boxrS:BAD LUCK. UR NOT LAUNDERS:boxrS:\n:boxrM::boxrM::boxrM::boxrM::boxrM::boxrM:')
+        await bot.send_message(ctx.message.author, ':eggplant:BAD LUCK. UR NOT LAUNDERS:boxrS:\n:frog::frog::frog::frog::frog::frog:')
 
 @bot.command(pass_context=True)
 async def subscribe(ctx):
