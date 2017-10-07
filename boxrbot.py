@@ -16,7 +16,7 @@ bot = commands.Bot(command_prefix='.', description=description)
 db = TinyDB('data.json')
 Users = Query()
 
-server_address = ("ip", 27015)
+server_address = ("ip", port)
 
 getgoingpw = "333"
 searching = False
@@ -33,7 +33,8 @@ async def password():
     chten = bot.get_channel('362888848323117061')
     pw = passworder.getpw()
     for player in chten.voice_members:
-        msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + str(server_address[1]) + "; password " + pw
+        #msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + str(server_address[1]) + "; password " + pw
+        msg = "Click this link to join the 10 man!\nsteam://connect/" + server_address[0] + ":" + str(server_address[1]) + "/" + pw
         await bot.send_message(player, msg, tts=False)
     return pw;
 
@@ -47,18 +48,20 @@ async def on_ready():
 @bot.event
 async def on_voice_state_update(before, after):
     try:
+        global searching
+        print(str(searching))
         server = bot.get_server('106386168593010688')
         chten = server.get_channel('362888848323117061')
         ch = after.voice.voice_channel
         bch = before.voice.voice_channel
-        if ch.id == '362888848323117061' and bch.id != '362888848323117061' and searching:
-            msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + str(server_address[1]) + "; password " + getgoingpw
+        if ch.id == '362888848323117061' and searching:
+            msg = "Click this link to join the 10 man!\nsteam://connect/" + server_address[0] + ":" + str(server_address[1]) + "/" + getgoingpw
             await bot.send_message(after, msg, tts=False)
         elif ch.id == '360561583409201162' and searching:
             await bot.move_member(after, chten)
-            msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + str(server_address[1]) + "; password " + getgoingpw
-            await bot.send_message(after, msg, tts=False)
         if len(chten.voice_members) == 10 and searching:
+            print(str(chten.voice_members))
+            print('searching=false')
             seraching = False
     except AttributeError:
         pass
@@ -168,6 +171,8 @@ async def tenman(ctx):
 @bot.command(pass_context=True)
 async def getgoing(ctx):
     """Start a ten man early, anyone to join channel will receive connect info"""
+    global searching
+    global getgoingpw
     if checkperms(ctx):
         server = bot.get_server('106386168593010688')
         chten = bot.get_channel('362888848323117061')
@@ -179,5 +184,6 @@ async def getgoing(ctx):
         else:
             getgoingpw = await password()
             searching = True
+            print(str(searching))
 
 bot.run('token')
