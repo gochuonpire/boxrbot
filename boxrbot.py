@@ -8,6 +8,7 @@ from tinydb.operations import delete
 import valve.rcon
 import random
 import string
+import passworder
 
 description = '''A bot for the boxr discord'''
 bot = commands.Bot(command_prefix='.', description=description)
@@ -16,7 +17,6 @@ db = TinyDB('data.json')
 Users = Query()
 
 server_address = ("ip", 27015)
-password = "rcon_pw"
 
 getgoingpw = "333"
 searching = False
@@ -31,13 +31,9 @@ def checkperms(ctx):
 async def password():
     print('Generating password')
     chten = bot.get_channel('362888848323117061')
-    length = random.randint(3,4)
-    pw = pw_generator(length)
-    print('Pw: ' + pw + "\nAttempting to access rcon")
-    with valve.rcon.RCON(server_address, password) as rcon:
-        print(rcon("sm_sv_password " + pw))
+    pw = passworder.getpw()
     for player in chten.voice_members:
-        msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + server_address[1] + "; password " + pw
+        msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + str(server_address[1]) + "; password " + pw
         await bot.send_message(player, msg, tts=False)
     return pw;
 
@@ -56,11 +52,11 @@ async def on_voice_state_update(before, after):
         ch = after.voice.voice_channel
         bch = before.voice.voice_channel
         if ch.id == '362888848323117061' and bch.id != '362888848323117061' and searching:
-            msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + server_address[1] + "; password " + getgoingpw
+            msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + str(server_address[1]) + "; password " + getgoingpw
             await bot.send_message(after, msg, tts=False)
         elif ch.id == '360561583409201162' and searching:
             await bot.move_member(after, chten)
-            msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + server_address[1] + "; password " + getgoingpw
+            msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + str(server_address[1]) + "; password " + getgoingpw
             await bot.send_message(after, msg, tts=False)
         if len(chten.voice_members) == 10 and searching:
             seraching = False
@@ -82,13 +78,13 @@ async def sendpass(ctx):
         for vm in vc.voice_members:
             if(vm.id != ctx.message.author.id):
                 rough = ctx.message.content
-                password = rough[10:len(rough)]
-                msg = "Heres the ten-man password: **"  + password + "**\nJoin Up! :eggplant:"
+                pw = rough[10:len(rough)]
+                msg = "Heres the ten-man password: **"  + pw + "**\nJoin Up! :eggplant:"
                 await bot.send_message(vm, msg, tts=False)
             else:
                 rough = ctx.message.content
-                password = rough[10:len(rough)]
-                msg = "Password **" + password + "** sent successfully :thumbsup:"
+                pw = rough[10:len(rough)]
+                msg = "Password **" + pw + "** sent successfully :thumbsup:"
                 await bot.send_message(vm, msg, tts=False)
 
 @bot.command(pass_context=True)
