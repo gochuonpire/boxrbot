@@ -2,12 +2,8 @@ import discord
 from discord.ext import commands
 import random
 import asyncio
-from twitch import TwitchClient
 from tinydb import TinyDB, Query
 from tinydb.operations import delete
-import valve.rcon
-import random
-import string
 import passworder
 
 description = '''A bot for the boxr discord'''
@@ -20,9 +16,6 @@ server_address = ("ip", port)
 
 getgoingpw = "333"
 searching = False
-
-def pw_generator(size=3, chars=string.ascii_letters + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
 
 def checkperms(ctx):
     allowed = ctx.message.author.id == '73654252970446848' or ctx.message.author.id == '73637559799910400' or ctx.message.author.id == '284232617363111936'
