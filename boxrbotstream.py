@@ -1,14 +1,11 @@
 import discord
 from discord.ext import commands
-from twitch import TwitchClient
-from tinydb import TinyDB, Query
 from tinydb.operations import delete
 import asyncio
+from twitch import TwitchClient
+import sqlite3
 
 bot = discord.Client()
-
-db = TinyDB('data.json')
-Users = Query()
 
 async def checkStream():
     server = bot.get_server('106386168593010688')
@@ -47,11 +44,17 @@ async def checkStream():
 
 async def updateUsers(msg):
     server = bot.get_server('106386168593010688')
-    print("Updating users")
-    for item in db:
-        if(item["sup"] == 1):
-            m = server.get_member(item["id"])
-            await bot.send_message(m, '', embed=msg)
+    conn = sqlite3.connect('boxrbot.db')
+    c = conn.cursor()
+    t = (True,)
+    c.execute('SELECT * FROM subscribers WHERE subscribed = ?', t)
+    result = c.fetchall()
+    for row in result:
+        userid = row[0]
+        m = server.get_member(userid)
+        await bot.send_message(m, '', embed=msg)
+    conn.close()
+
 @bot.event
 async def on_ready():
     while True:
