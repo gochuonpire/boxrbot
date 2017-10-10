@@ -179,7 +179,7 @@ async def groupadd(ctx):
             if owner == ctx.message.author.id:
                 rough = ctx.message.content
                 user = rough[10:len(rough)]
-                member = server.get_member(user)
+                member = server.get_member_named(user)
                 overwrite = discord.PermissionOverwrite()
                 overwrite.connect = True
                 overwrite.speak = True
@@ -206,7 +206,7 @@ async def groupremove(ctx):
             if owner == ctx.message.author.id:
                 rough = ctx.message.content
                 user = rough[13:len(rough)]
-                member = server.get_member(user)
+                member = server.get_member_named(user)
                 overwrite = discord.PermissionOverwrite()
                 overwrite.connect = False
                 overwrite.speak = False
@@ -227,29 +227,30 @@ async def groupcreate(ctx):
             rough = ctx.message.content
             user = rough[13:len(rough)]
             server = bot.get_server('106386168593010688')
+            ouser = server.get_member_named(user)
             c = conn.cursor()
-            t = (user,)
+            t = (ouser.id,)
             c.execute('SELECT * FROM private WHERE owner=?', t)
             result = c.fetchone()
             print(result)
             if result != None:
-                member = server.get_member(user)
+                member = server.get_member_named(user)
                 if member !=None:
                     await bot.send_message(ctx.message.author, "User " + member.mention + " already has a private channel")
                 else:
                     await bot.send_message(ctx.message.author, "User " + user + " already has a private channel")
             else:
-                member = server.get_member(user)
+                member = server.get_member_named(user)
                 print(user)
                 if member != None:
                     print("creating channel for " + user)
-                    lpos = 1
+                    lpos = 0
                     for channel in server.channels:
                         if channel.type == discord.ChannelType.voice:
                             if channel.position > lpos:
-                                lpos = channel.position
+                                lpos += 1
                     newch = await bot.create_channel(server, member.name + "'s Room", type=discord.ChannelType.voice)
-                    await bot.move_channel(newch, lpos)
+                    await bot.move_channel(newch, lpos+1)
                     overwrite = discord.PermissionOverwrite()
                     overwrite.connect = True
                     overwrite.speak = True
@@ -271,9 +272,9 @@ async def groupdelete(ctx):
             rough = ctx.message.content
             user = rough[13:len(rough)]
             server = bot.get_server('106386168593010688')
-            ouser = server.get_member(user)
+            ouser = server.get_member_named(user)
             c = conn.cursor()
-            t = (user,)
+            t = (ouser.id,)
             c.execute('SELECT * FROM private WHERE owner=?', t)
             result = c.fetchone()
             if result != None:
