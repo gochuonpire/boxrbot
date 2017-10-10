@@ -67,32 +67,6 @@ async def on_voice_state_update(before, after):
     if len(chten.voice_members) == 10 and searching:
         seraching = False
 
-@bot.command(pass_context=True, category="ten-man")
-async def stoptenman(ctx):
-    """Stop automatically filling your ten man / sending passwords"""
-    if ctx.message.channel.is_private == True:
-        searching = False
-        msg = "People will no longer be bumped to 10man channel or sent password automatically"
-        await bot.send_message(ctx.message.author, msg, tts=False)
-
-@bot.command(pass_context=True, name="password")
-async def pw(ctx):
-    """Sends the given password to the users in the 10man voice channel"""
-    if ctx.message.channel.is_private == True:
-        if(checkperms(ctx)):
-            vc = bot.get_channel('362888848323117061')
-            for vm in vc.voice_members:
-                if(vm.id != ctx.message.author.id):
-                    rough = ctx.message.content
-                    pw = rough[10:len(rough)]
-                    msg = "Heres the ten-man password: **"  + pw + "**\nJoin Up! :eggplant:"
-                    await bot.send_message(vm, msg, tts=False)
-                else:
-                    rough = ctx.message.content
-                    pw = rough[10:len(rough)]
-                    msg = "Password **" + pw + "** sent successfully :thumbsup:"
-                    await bot.send_message(vm, msg, tts=False)
-
 @bot.command(pass_context=True)
 async def subscribe(ctx):
     """Adds you to the updatelist"""
@@ -139,6 +113,24 @@ async def unsubscribe(ctx):
             msg = "You already aren't subscribed to streaming notifications!\nTo receive notifications, type .subscribe!"
             await bot.send_message(ctx.message.author, msg)
 
+@bot.command(pass_context=True, name="password")
+async def pw(ctx):
+    """Sends the given password to the users in the 10man voice channel"""
+    if ctx.message.channel.is_private == True:
+        if(checkperms(ctx)):
+            vc = bot.get_channel('362888848323117061')
+            for vm in vc.voice_members:
+                if(vm.id != ctx.message.author.id):
+                    rough = ctx.message.content
+                    pw = rough[10:len(rough)]
+                    msg = "Heres the ten-man password: **"  + pw + "**\nJoin Up! :eggplant:"
+                    await bot.send_message(vm, msg, tts=False)
+                else:
+                    rough = ctx.message.content
+                    pw = rough[10:len(rough)]
+                    msg = "Password **" + pw + "** sent successfully :thumbsup:"
+                    await bot.send_message(vm, msg, tts=False)
+
 @bot.command(pass_context=True)
 async def tenman(ctx):
     """Changes the password to the server and sends the new one to players"""
@@ -165,6 +157,14 @@ async def tenman(ctx):
                 else:
                     getgoingpw = await password()
                     searching = True
+
+@bot.command(pass_context=True, category="ten-man")
+async def stoptenman(ctx):
+    """Stop automatically filling your ten man / sending passwords"""
+    if ctx.message.channel.is_private == True:
+        searching = False
+        msg = "People will no longer be bumped to 10man channel or sent password automatically"
+        await bot.send_message(ctx.message.author, msg, tts=False)
 
 @bot.command(pass_context=True)
 async def groupadd(ctx):
