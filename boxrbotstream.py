@@ -15,32 +15,37 @@ async def checkStream():
     vc = server.get_channel('365175633103552512')
     try:
         if(stream.id is not None):
-            flag = 1;
+            flag = 1
             async for message in bot.logs_from(vc, 500):
                 if(message.author.id == '362978129301471234'):
                     if(len(message.embeds)>0):
-                        flag = 0;
+                        flag = 0
                         print('No update needed (streaming)')
                     else:
                         await bot.delete_message(message)
             if(flag == 1):
                 eMsg = discord.Embed(title=stream.channel.status, url=stream.channel.url, description="Playing: " + stream.channel.game)
-                eMsg.set_thumbnail(url=stream.preview["large"])
+                eMsg.set_image(url=stream.preview["large"])
                 eMsg.set_author(name="launders is live!")
                 await bot.send_message(vc, '', embed=eMsg)
                 await updateUsers(eMsg)
+
     except AttributeError:
+        flag = 1
         async for message in bot.logs_from(vc, 500):
-            flag = 1;
             if(message.author.id == '362978129301471234'):
                 if(len(message.embeds)>0):
                     await bot.delete_message(message)
                 else:
-                    flag = 0;
+                    flag = 0
                     print('No update needed (not streaming)')
                 if(flag == 1):
+                    flag = 0
                     msg = "launders is offine! You can message " + bot.user.mention + " with **.subscribe** for a message every time he goes live!:pager:"
                     await bot.send_message(vc, msg, tts=False)
+            if flag == 1:
+                msg = "launders is offine! You can message " + bot.user.mention + " with **.subscribe** for a message every time he goes live!:pager:"
+                await bot.send_message(vc, msg, tts=False)
 
 async def updateUsers(msg):
     server = bot.get_server('106386168593010688')

@@ -159,6 +159,7 @@ async def tenman(ctx):
 @bot.command(pass_context=True, category="ten-man")
 async def stoptenman(ctx):
     """Stop automatically filling your ten man / sending passwords"""
+    global searching
     if ctx.message.channel.is_private == True:
         searching = False
         msg = "People will no longer be bumped to 10man channel or sent password automatically"
@@ -254,6 +255,8 @@ async def groupcreate(ctx):
                     c.execute("INSERT INTO private (owner, channel) values (?, ?)", t)
                     msg = "Created channel " + newch.mention + " for " + member.mention
                     await bot.send_message(ctx.message.author, msg)
+                    helpmsg = "You've been assigned a private voice channel! This channel is all yours, to give you a space where you and your friends can hangout with no intrusions or interruptions. Only people you put on your guest list can join and adding people is pretty simple.\nThe three commands you can use to manage your private channel are **.groupadd .groupremove & .grouplist**. All these commands are used just by sending them to me, BOXR Bot. Just send me your friends ID (You can find this by clicking their profile wherever you see it in Discord. It should look something like this :point_right::skin-tone-3:  **Friend#4813**) with the .groupadd command and I'll add them to the guest list of your private channel! You can list all the people allowed in your channel by by typing .grouplist and remove them by typing .groupremove Friend#4813.\nIf you ever forget these commands, you can send me .help to get some assistance."
+                    await bot.send_message(member, helpmsg)
             conn.commit()
 
 @bot.command(pass_context=True, hidden=True)
@@ -287,7 +290,7 @@ async def groupdelete(ctx):
                 await bot.send_message(ctx.message.author, msg)
 
 @bot.command(pass_context=True)
-async def groupmembers(ctx):
+async def grouplist(ctx):
     if ctx.message.channel.is_private == True:
         c = conn.cursor()
         t = (ctx.message.author.id,)
@@ -314,5 +317,3 @@ async def groupmembers(ctx):
             await bot.send_message(ctx.message.author, msg)
 
 bot.run('token')
-
-conn.close()
