@@ -244,7 +244,7 @@ async def groupcreate(ctx):
                         if channel.type == discord.ChannelType.voice:
                             if channel.position > lpos:
                                 lpos += 1
-                    newch = await bot.create_channel(server, member.name + "'s Room", type=discord.ChannelType.voice)
+                    newch = await bot.create_channel(server, member.name + "'s Room", parent_id='363510895982149633', type=discord.ChannelType.voice, )
                     #await bot.move_channel(newch, lpos+1)
                     await bot.move_channel(newch, 0)
                     overwrite = discord.PermissionOverwrite()
