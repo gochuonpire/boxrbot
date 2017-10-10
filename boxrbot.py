@@ -46,12 +46,10 @@ async def on_voice_state_update(before, after):
     if ch == None:
         if searching and after.id == '73654252970446848':
             searching = False
-            print('stopping search for 10man')
     else:
         if searching and after.id == '73654252970446848':
             if ch.id != '362888848323117061' and ch.id != '360561583409201162' and ch.id != '360561642506813440' and ch.id != '360561674752622609':
                 searching = False
-                print('stopping search for 10man')
         if bch != None:
             if ch.id == '362888848323117061' and searching and bch.id != '362888848323117061':
                 msg = "Click this link to join the 10 man!\nsteam://connect/" + server_address[0] + ":" + str(server_address[1]) + "/" + getgoingpw
@@ -232,7 +230,6 @@ async def groupcreate(ctx):
             t = (ouser.id,)
             c.execute('SELECT * FROM private WHERE owner=?', t)
             result = c.fetchone()
-            print(result)
             if result != None:
                 member = server.get_member_named(user)
                 if member !=None:
@@ -241,19 +238,19 @@ async def groupcreate(ctx):
                     await bot.send_message(ctx.message.author, "User " + user + " already has a private channel")
             else:
                 member = server.get_member_named(user)
-                print(user)
                 if member != None:
-                    print("creating channel for " + user)
                     lpos = 0
                     for channel in server.channels:
                         if channel.type == discord.ChannelType.voice:
                             if channel.position > lpos:
                                 lpos += 1
                     newch = await bot.create_channel(server, member.name + "'s Room", type=discord.ChannelType.voice)
-                    await bot.move_channel(newch, lpos+1)
+                    #await bot.move_channel(newch, lpos+1)
+                    await bot.move_channel(newch, 0)
                     overwrite = discord.PermissionOverwrite()
                     overwrite.connect = True
                     overwrite.speak = True
+                    overwrite.manage_channels = True
                     await bot.edit_channel_permissions(newch, target=member, overwrite=overwrite)
                     everyone_perms = discord.PermissionOverwrite()
                     everyone_perms.connect = False
@@ -294,6 +291,33 @@ async def groupdelete(ctx):
             else:
                 msg = "Channel not found for " + ouser.mention
                 await bot.send_message(ctx.message.author, msg)
+
+@bot.command(pass_context=True)
+async def groupmembers(ctx):
+    if ctx.message.channel.is_private == True:
+        c = conn.cursor()
+        t = (ctx.message.author.id,)
+        c.execute('SELECT * FROM private WHERE owner=?', t)
+        result = c.fetchone()
+        if result != None:
+            channel = bot.get_channel(result[1])
+            lines = []
+            for mov in channel.overwrites:
+                if mov[0] is not discord.Role:
+                    if mov[1].connect:
+                        msg = mov[0].mention + " :white_check_mark:"
+                        lines.append(msg)
+                    else:
+                        msg = mov[0].mention + " :x:"
+                        lines.append(msg)
+            msg = ""
+            for line in lines[1:]:
+                line += "\n"
+                msg += line
+            await bot.send_message(ctx.message.author, msg)
+        else:
+            msg = "Channel not found for " + ctx.message.author.mention
+            await bot.send_message(ctx.message.author, msg)
 
 bot.run('token')
 
