@@ -12,7 +12,7 @@ async def checkStream():
     print('Checking stream')
     client = TwitchClient('twitch_api_client_id')
     stream = client.streams.get_stream_by_user('twitch_channel_id')
-    vc = server.get_channel('365175633103552512')
+    vc = server.get_channel('141316972750045185')
     try:
         if(stream.id is not None):
             flag = 1
@@ -41,10 +41,10 @@ async def checkStream():
                     print('No update needed (not streaming)')
                 if(flag == 1):
                     flag = 0
-                    msg = "launders is offine! You can message " + bot.user.mention + " with **.subscribe** for a message every time he goes live!:pager:"
+                    msg = "launders is offline! You can message " + bot.user.mention + " with **.subscribe** for a message every time he goes live!:pager:"
                     await bot.send_message(vc, msg, tts=False)
             if flag == 1:
-                msg = "launders is offine! You can message " + bot.user.mention + " with **.subscribe** for a message every time he goes live!:pager:"
+                msg = "launders is offline! You can message " + bot.user.mention + " with **.subscribe** for a message every time he goes live!:pager:"
                 await bot.send_message(vc, msg, tts=False)
 
 async def updateUsers(msg):
