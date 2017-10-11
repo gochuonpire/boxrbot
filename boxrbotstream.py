@@ -9,7 +9,6 @@ bot = discord.Client()
 
 async def checkStream():
     server = bot.get_server('106386168593010688')
-    print('Checking stream')
     client = TwitchClient('twitch_api_client_id')
     stream = client.streams.get_stream_by_user('twitch_channel_id')
     vc = server.get_channel('141316972750045185')
@@ -38,7 +37,6 @@ async def checkStream():
                     await bot.delete_message(message)
                 else:
                     flag = 0
-                    print('No update needed (not streaming)')
                 if(flag == 1):
                     flag = 0
                     msg = "launders is offline! You can message " + bot.user.mention + " with **.subscribe** for a message every time he goes live!:pager:"
