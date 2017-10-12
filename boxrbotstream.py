@@ -4,8 +4,12 @@ from tinydb.operations import delete
 import asyncio
 from twitch import TwitchClient
 import sqlite3
+import string
 
 bot = discord.Client()
+
+def r_gen(size=7, chars=string.ascii_letters + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 async def checkStream():
     server = bot.get_server('106386168593010688')
@@ -19,12 +23,13 @@ async def checkStream():
                 if(message.author.id == '362978129301471234'):
                     if(len(message.embeds)>0):
                         flag = 0
-                        print('No update needed (streaming)')
                     else:
                         await bot.delete_message(message)
             if(flag == 1):
                 eMsg = discord.Embed(title=stream.channel.status, url=stream.channel.url, description="Playing: " + stream.channel.game)
-                eMsg.set_image(url=stream.preview["large"])
+                rando = r_gen()
+                imgUrl = stream.preview["large"] + "?test=" + rando
+                eMsg.set_image(url=imgUrl)
                 eMsg.set_author(name="launders is live!")
                 await bot.send_message(vc, '', embed=eMsg)
                 await updateUsers(eMsg)
