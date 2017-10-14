@@ -26,6 +26,8 @@ async def password():
     for player in chten.voice_members:
         #msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + str(server_address[1]) + "; password " + pw
         msg = "Click this link to join the 10 man!\nsteam://connect/" + server_address[0] + ":" + str(server_address[1]) + "/" + pw
+        msg2 = "\nOr copy&paste this into your console: connect " + server_address[0] + ":" + str(server_address[1]) + ";password " + pw
+        msg += msg2
         await bot.send_message(player, msg, tts=False)
     return pw;
 
@@ -53,12 +55,16 @@ async def on_voice_state_update(before, after):
         if bch != None:
             if ch.id == '362888848323117061' and searching and bch.id != '362888848323117061':
                 msg = "Click this link to join the 10 man!\nsteam://connect/" + server_address[0] + ":" + str(server_address[1]) + "/" + getgoingpw
+                msg2 = "\nOr copy&paste this into your console: connect " + server_address[0] + ":" + str(server_address[1]) + ";password " + getgoingpw
+                msg += msg2
                 await bot.send_message(after, msg, tts=False)
             elif ch.id == '360561583409201162' and searching:
                 await bot.move_member(after, chten)
         else:
             if ch.id == '362888848323117061' and searching:
                 msg = "Click this link to join the 10 man!\nsteam://connect/" + server_address[0] + ":" + str(server_address[1]) + "/" + getgoingpw
+                msg2 = "\nOr copy&paste this into your console: connect " + server_address[0] + ":" + str(server_address[1]) + ";password " + getgoingpw
+                msg += msg2
                 await bot.send_message(after, msg, tts=False)
             elif ch.id == '360561583409201162' and searching:
                 await bot.move_member(after, chten)
@@ -255,7 +261,7 @@ async def groupcreate(ctx):
                     c.execute("INSERT INTO private (owner, channel) values (?, ?)", t)
                     msg = "Created channel " + newch.mention + " for " + member.mention
                     await bot.send_message(ctx.message.author, msg)
-                    helpmsg = "You've been assigned a private voice channel! This channel is all yours, to give you a space where you and your friends can hangout with no intrusions or interruptions. Only people you put on your guest list can join and adding people is pretty simple.\nThe three commands you can use to manage your private channel are **.groupadd .groupremove & .grouplist**. All these commands are used just by sending them to me, BOXR Bot. Just send me your friends ID (You can find this by clicking their profile wherever you see it in Discord. It should look something like this :point_right::skin-tone-3:  **Friend#4813**) with the .groupadd command and I'll add them to the guest list of your private channel! You can list all the people allowed in your channel by by typing .grouplist and remove them by typing .groupremove Friend#4813.\nIf you ever forget these commands, you can send me .help to get some assistance."
+                    helpmsg = "You've been assigned a private voice channel! This channel is all yours, to give you a space where you and your friends can hangout with no intrusions or interruptions. Only people you put on your guest list can join and adding people is pretty simple.\nThe three commands you can use to manage your private channel are **.groupadd .groupremove & .grouplist**. All these commands are used just by sending them to me, BOXR Bot. Just send me your friends ID (You can find this by clicking their profile wherever you see it in Discord. It should look something like this :point_right::skin-tone-3:  **Friend#4813**) with the **.groupadd** command and I'll add them to the guest list of your private channel! You can list all the people allowed in your channel by by typing **.grouplist** and remove them by typing **.groupremove Friend#4813**.\nIf you ever forget these commands, you can send me **.help** to get some assistance."
                     await bot.send_message(member, helpmsg)
             conn.commit()
 
