@@ -154,7 +154,7 @@ async def tenman(ctx):
                     lucky = sample(wten.voice_members, spaces)
                     for player in lucky:
                         await bot.move_member(player, chten)
-                password()
+                await password()
             else:
                 for player in wten.voice_members:
                     await bot.move_member(player, chten)
