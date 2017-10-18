@@ -38,7 +38,7 @@ async def on_ready():
     print(bot.user.id)
     print('------')
     newGame = discord.Game(name="message me .help", url="https://i.imgur.com/n4qxP6L.png")
-    await bot.change_status(game=newGame)
+    await bot.change_presence(game=newGame)
 
 @bot.event
 async def on_voice_state_update(before, after):
