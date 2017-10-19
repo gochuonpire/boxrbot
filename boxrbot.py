@@ -175,6 +175,7 @@ async def stoptenman(ctx):
 
 @bot.command(pass_context=True)
 async def groupadd(ctx):
+    """Gives the specified user access to your channel"""
     if ctx.message.channel.is_private == True:
         server = bot.get_server('106386168593010688')
         t = (ctx.message.author.id,)
@@ -202,6 +203,7 @@ async def groupadd(ctx):
 
 @bot.command(pass_context=True)
 async def groupremove(ctx):
+    """Revokes the specified user's access to your channel"""
     if ctx.message.channel.is_private == True:
         server = bot.get_server('106386168593010688')
         t = (ctx.message.author.id,)
@@ -229,6 +231,7 @@ async def groupremove(ctx):
 
 @bot.command(pass_context=True, hidden=True)
 async def groupcreate(ctx):
+    """Creates a group for the specified owner"""
     if ctx.message.channel.is_private == True:
         if(checkperms(ctx)):
             rough = ctx.message.content
@@ -269,6 +272,7 @@ async def groupcreate(ctx):
 
 @bot.command(pass_context=True, hidden=True)
 async def groupdelete(ctx):
+    """Deletes the group of the specified owner"""
     if ctx.message.channel.is_private == True:
         if(checkperms(ctx)):
             rough = ctx.message.content
@@ -299,6 +303,7 @@ async def groupdelete(ctx):
 
 @bot.command(pass_context=True)
 async def grouplist(ctx):
+    """Lists all the people that can access your channel"""
     if ctx.message.channel.is_private == True:
         c = conn.cursor()
         t = (ctx.message.author.id,)
