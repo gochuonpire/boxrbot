@@ -24,11 +24,10 @@ async def password():
     chten = bot.get_channel('362888848323117061')
     pw = passworder.getpw()
     for player in chten.voice_members:
-        #msg = "Paste this into your console to join the 10 man!\nconnect " + server_address[0] + ":" + str(server_address[1]) + "; password " + pw
         msg = "Click this link to join the 10 man!\nsteam://connect/" + server_address[0] + ":" + str(server_address[1]) + "/" + pw
         msg2 = "\nOr copy&paste this into your console: connect " + server_address[0] + ":" + str(server_address[1]) + ";password " + pw
         msg += msg2
-        await bot.send_message(player, msg, tts=False)
+        await bot.send_message(player, msg)
     return pw;
 
 @bot.event
@@ -59,7 +58,7 @@ async def on_voice_state_update(before, after):
                 msg = "Click this link to join the 10 man!\nsteam://connect/" + server_address[0] + ":" + str(server_address[1]) + "/" + getgoingpw
                 msg2 = "\nOr copy&paste this into your console: connect " + server_address[0] + ":" + str(server_address[1]) + ";password " + getgoingpw
                 msg += msg2
-                await bot.send_message(after, msg, tts=False)
+                await bot.send_message(after, msg)
             elif ch.id == '360561583409201162' and searching:
                 await bot.move_member(after, chten)
         else:
@@ -67,10 +66,11 @@ async def on_voice_state_update(before, after):
                 msg = "Click this link to join the 10 man!\nsteam://connect/" + server_address[0] + ":" + str(server_address[1]) + "/" + getgoingpw
                 msg2 = "\nOr copy&paste this into your console: connect " + server_address[0] + ":" + str(server_address[1]) + ";password " + getgoingpw
                 msg += msg2
-                await bot.send_message(after, msg, tts=False)
+                await bot.send_message(after, msg)
             elif ch.id == '360561583409201162' and searching:
                 await bot.move_member(after, chten)
     if len(chten.voice_members) == 10 and searching:
+        print("No longer waiting for players")
         seraching = False
 
 @bot.command(pass_context=True)
@@ -130,12 +130,12 @@ async def pw(ctx):
                     rough = ctx.message.content
                     pw = rough[10:len(rough)]
                     msg = "Heres the ten-man password: **"  + pw + "**\nJoin Up! :eggplant:"
-                    await bot.send_message(vm, msg, tts=False)
+                    await bot.send_message(vm, msg)
                 else:
                     rough = ctx.message.content
                     pw = rough[10:len(rough)]
                     msg = "Password **" + pw + "** sent successfully :thumbsup:"
-                    await bot.send_message(vm, msg, tts=False)
+                    await bot.send_message(vm, msg)
 
 @bot.command(pass_context=True)
 async def tenman(ctx):
@@ -148,21 +148,31 @@ async def tenman(ctx):
             chten = bot.get_channel('362888848323117061')
             wten = bot.get_channel('360561583409201162')
             if((len(chten.voice_members)+len(wten.voice_members))>=10):
-                laundo = server.get_member('73654252970446848')
-                if(laundo.voice.voice_channel != chten):
-                    await bot.move_member(laundo, chten)
+                try:
+                    laundo = server.get_member('73654252970446848')
+                    if(laundo.voice.voice_channel != chten):
+                        await bot.move_member(laundo, chten)
+                except AttributeError:
+                    msg = "A tenman without launders? Haha yeah fuck that guy."
+                    await bot.send_message(ctx.message.author, msg)
                 spaces = 10 - len(chten.voice_members)
                 if(spaces > 0):
+                    print("Staring tenman with " + str(spaces) + " extra spots")
                     lucky = sample(wten.voice_members, spaces)
                     for player in lucky:
+                        print("Moving " + player.name)
                         await bot.move_member(player, chten)
+                else:
+                    print("Starting tenman with no extra spots")
                 await password()
             else:
                 for player in wten.voice_members:
+                    print("Moving " + player.name)
                     await bot.move_member(player, chten)
-                else:
-                    getgoingpw = await password()
-                    searching = True
+                print("Starting tenman with " + str(len(chten.voice_members)) + " extra spots")
+                print("Waiting for new members")
+                getgoingpw = await password()
+                searching = True
 
 @bot.command(pass_context=True, category="ten-man")
 async def stoptenman(ctx):
@@ -171,7 +181,7 @@ async def stoptenman(ctx):
     if ctx.message.channel.is_private == True:
         searching = False
         msg = "People will no longer be bumped to 10man channel or sent password automatically"
-        await bot.send_message(ctx.message.author, msg, tts=False)
+        await bot.send_message(ctx.message.author, msg)
 
 @bot.command(pass_context=True)
 async def groupadd(ctx):

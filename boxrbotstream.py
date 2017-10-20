@@ -45,10 +45,10 @@ async def checkStream():
                 if(flag == 1):
                     flag = 0
                     msg = "launders is offline! You can message " + bot.user.mention + " with **.subscribe** for a message every time he goes live!:pager:"
-                    await bot.send_message(vc, msg, tts=False)
+                    await bot.send_message(vc, msg)
             if flag == 1:
                 msg = "launders is offline! You can message " + bot.user.mention + " with **.subscribe** for a message every time he goes live!:pager:"
-                await bot.send_message(vc, msg, tts=False)
+                await bot.send_message(vc, msg)
 
 async def updateUsers(msg):
     server = bot.get_server('106386168593010688')
