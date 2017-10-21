@@ -169,7 +169,7 @@ async def tenman(ctx):
                 for player in wten.voice_members:
                     print("Moving " + player.name)
                     await bot.move_member(player, chten)
-                print("Starting tenman with " + str(len(chten.voice_members)) + " extra spots")
+                print("Starting tenman with " + str(10-len(chten.voice_members)) + " extra spots")
                 print("Waiting for new members")
                 getgoingpw = await password()
                 searching = True
