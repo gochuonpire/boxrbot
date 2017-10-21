@@ -71,7 +71,7 @@ async def on_voice_state_update(before, after):
                 await bot.move_member(after, chten)
     if len(chten.voice_members) == 10 and searching:
         print("No longer waiting for players")
-        seraching = False
+        searching = False
 
 @bot.command(pass_context=True)
 async def subscribe(ctx):
