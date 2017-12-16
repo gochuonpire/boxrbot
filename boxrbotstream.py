@@ -20,7 +20,7 @@ async def checkStream():
         try:
             if(stream.id is not None):
                 flag = 1
-                async for message in bot.logs_from(vc, 500):
+                async for message in bot.logs_from(vc, 5):
                     if(message.author.id == '362978129301471234'):
                         if(len(message.embeds)>0):
                             flag = 0
@@ -51,7 +51,7 @@ async def checkStream():
                     msg = "launders is offline! You can message " + bot.user.mention + " with **.subscribe** for a message every time he goes live!:pager:"
                     await bot.send_message(vc, msg)
     except:
-        print("Twitch broke boi idk or something")
+        print("Unexpected error:", sys.exc_info()[0])
 
 async def updateUsers(msg):
     server = bot.get_server('106386168593010688')
